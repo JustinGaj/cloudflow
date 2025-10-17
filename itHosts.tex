@@ -1,0 +1,25 @@
+% File: itHosts.tex
+\chapter{Hosts}
+\label{ch:hosts}
+
+This chapter lists the hosts used in our development environment.
+
+\begin{longtable}{|l|l|}
+\hline
+\textbf{Host Name} & \textbf{Purpose} \\
+\hline
+dev-server-01 & Application development server \\
+\hline
+db-server-02 & Database server (PostgreSQL) \\
+\hline
+qa-server-01 & Quality assurance / testing server \\
+\hline
+prod-server-01 & Production deployment server \\
+\hline
+backup-server-01 & Backup and recovery server \\
+\hline
+\end{longtable}
+
+\section{Notes}
+Each host is configured with SSH access and restricted firewall rules.  
+All hosts follow the naming convention: \texttt{<role>-server-XX}.

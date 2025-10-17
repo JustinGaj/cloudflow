@@ -1,0 +1,26 @@
+% File: Hosts.tex
+\chapter{Hosts}
+\label{ch:hosts}
+
+The following are the host systems used in our development and deployment pipelines. These include local development VMs, cloud infrastructure, CI/CD runners, and monitoring servers.
+
+\begin{longtable}{|p{5cm}|p{4cm}|p{6cm}|}
+\hline
+\textbf{Host Name} & \textbf{Environment} & \textbf{Purpose} \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{Host Name} & \textbf{Environment} & \textbf{Purpose} \\
+\hline
+\endhead
+
+dev-server-01 & Development & Primary development server for testing code changes \\
+staging-server-01 & Staging & QA testing and staging prior to production deployment \\
+prod-server-01 & Production & Main application host for users \\
+local-vm & Local Development & Developer VM for local coding and testing \\
+ci-runner-01 & CI/CD & Runs builds and deployment pipelines via GitHub Actions \\
+monitoring-node & Monitoring & Runs Grafana, Prometheus, and log aggregation tools \\
+\hline
+\end{longtable}
+

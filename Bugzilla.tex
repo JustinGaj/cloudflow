@@ -1,0 +1,34 @@
+% File: Bugzilla.tex
+\chapter{Bugzilla Setup}
+\label{ch:bugzilla}
+
+This chapter details the configuration of the Bugzilla issue tracking system using Docker Desktop on a local machine.
+
+\section{Docker Desktop Setup}
+
+Bugzilla was deployed as a Docker container using the official \texttt{linuxserver/bugzilla} image. The container was started with the following command:
+
+\begin{verbatim}
+docker run -d --name bugzilla -p 8080:80 -e TZ=UTC linuxserver/bugzilla
+\end{verbatim}
+
+This command runs the Bugzilla container in detached mode, mapping port 8080 on the host to port 80 inside the container. The environment variable \texttt{TZ=UTC} sets the timezone.
+
+\section{Accessing Bugzilla}
+
+Once the container is running, Bugzilla can be accessed at:
+
+\begin{center}
+\url{http://YOUR_PUBLIC_IP:8080}
+\end{center}
+
+Replace \url{YOUR_PUBLIC_IP} with the actual public IP address of the machine hosting Docker Desktop. Make sure that port 8080 is open and forwarded properly if behind a router or firewall.
+
+\section{Additional Notes}
+
+\begin{itemize}
+    \item Ensure Docker Desktop is running and the Bugzilla container is active.
+    \item Verify that your machine's firewall or network configuration allows inbound traffic on port 8080.
+    \item This setup provides a quick and isolated environment to use Bugzilla without a dedicated server.
+\end{itemize}
+

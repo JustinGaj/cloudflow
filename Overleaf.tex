@@ -1,0 +1,29 @@
+% File: Overleaf.tex
+\chapter{Overleaf Setup}
+\label{ch:overleaf}
+
+This chapter describes the configuration of Overleaf, the online LaTeX editor, deployed using Docker.
+
+\section{Docker Setup}
+
+Overleaf was run as a Docker container using the official \texttt{sharelatex/sharelatex} image. The container was started with the following command:
+
+\begin{verbatim}
+docker run -d --name overleaf \
+    --link mongo:mongo \
+    --link redis:redis \
+    -p 3000:80 sharelatex/sharelatex
+\end{verbatim}
+
+This command runs the Overleaf container in detached mode, linking it to MongoDB and Redis containers, and maps port 3000 on the host to port 80 in the container.
+
+\section{Accessing Overleaf}
+
+Once the container is running and linked to the required services, Overleaf can be accessed at:
+
+\begin{center}
+\url{http://YOUR_PUBLIC_IP:3000}
+\end{center}
+
+Replace \url{YOUR_PUBLIC_IP} with the actual public IP address of the machine hosting Docker. Ensure that port 3000 is open and accessible.
+

@@ -1,0 +1,133 @@
+% File: aws_deployment.tex
+\chapter{AWS Deployment}
+\label{ch:aws-deployment}
+
+This chapter covers the deployment of the ``Two Buttons'' website using AWS 
+and a refactor of the JavaScript logic into a class-based design.
+
+% --------------------------------------------------
+\section{Deployment Steps}
+
+\subsection{Dockerfile}
+\begin{minted}{docker}
+FROM node:20-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install --omit=dev
+COPY . .
+EXPOSE 3000
+CMD ["npm", "start"]
+\end{minted}
+
+\subsection{Build and Run Locally}
+\begin{minted}{bash}
+docker build -t color-buttons-app .
+docker run -p 8080:3000 color-buttons-app
+# visit http://localhost:8080
+\end{minted}
+
+\subsection{Setting Up AWS}
+\begin{enumerate}
+    \item Create an AWS account
+    \item Create an SSO user in the IAM Identity Center, granting privileges as needed
+    \item Build a container using the Elastic Container Registry
+    \item Create a repository using the AWS App Runner and link it to the container
+\end{enumerate}
+
+\subsection{Push to ECR and Deploy with App Runner}
+\begin{minted}{bash}
+export AWS_REGION=us-east-1
+export ECR_REPO=color-buttons-app
+export IMAGE_TAG=v1
+export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+aws ecr create-repository --repository-name $ECR_REPO --region $AWS_REGION || true
+
+aws ecr get-login-password --region $AWS_REGION \
+| docker login --username AWS \
+  --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+
+docker build -t $ECR_REPO:$IMAGE_TAG .
+docker tag $ECR_REPO:$IMAGE_TAG \
+  $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO:$IMAGE_TAG
+\end{minted}
+
+You can view our deployed website by clicking
+\href{https://wrmtv5qpqi.us-east-1.awsapprunner.com/}{here}
+
+Here is the website link as well:
+https://wrmtv5qpqi.us-east-1.awsapprunner.com/
+
+% --------------------------------------------------
+\section{Two Buttons Refactor}
+
+\subsection{UML Diagram}
+\begin{table}[h!]
+\centering  % centers the table on the page
+\begin{tabular}{|c|}
+\hline
+TwoButtonApp \\ \hline
+\begin{minipage}{6cm}  % adjust width as needed
+\begin{itemize}
+  \renewcommand{\labelitemi}{--}
+  \item countA: number
+  \item countB: number
+  \item btnA: HTMLElement
+  \item btnB: HTMLElement
+\end{itemize}
+\end{minipage} \\ \hline
+\begin{minipage}{6cm}  % adjust width as needed
+\begin{itemize}
+  \renewcommand{\labelitemi}{+}
+  \item constructor(buttonAId...)
+  \item onButtonAClick(): void
+  \item onButtonBClick(): void
+\end{itemize}
+\end{minipage} \\ \hline
+\end{tabular}
+
+\caption{UML Diagram of JS refactor}
+\end{table}
+
+\subsection{index.html}
+\begin{minted}{html}
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>Two Buttons</h1>
+    <button id="blueBtn">Blue</button>
+    <button id="redBtn">Red</button>
+    <div id="status"></div>
+    <script src="app.js"></script>
+    <script>
+      new TwoButtonApp("blueBtn","redBtn");
+    </script>
+  </body>
+</html>
+\end{minted}
+
+\subsection{app.js}
+\begin{minted}{javascript}
+class TwoButtonApp {
+  constructor(buttonAId, buttonBId) {
+    this.countA = 0;
+    this.countB = 0;
+    this.btnA = document.getElementById(buttonAId);
+    this.btnB = document.getElementById(buttonBId);
+    this.btnA.addEventListener("click", () => this.onButtonAClick());
+    this.btnB.addEventListener("click", () => this.onButtonBClick());
+  }
+  onButtonAClick() {
+    document.body.style.backgroundColor = "blue";
+    document.getElementById("status").textContent =
+      `Blue clicked ${++this.countA} times`;
+  }
+  onButtonBClick() {
+    document.body.style.backgroundColor = "red";
+    document.getElementById("status").textContent =
+      `Red clicked ${++this.countB} times`;
+  }
+}
+\end{minted}
+

@@ -1,0 +1,69 @@
+% File: Book_SSW590 (1).tex
+\documentclass[12pt]{cornell}
+
+% --- Preamble ---
+\usepackage{makeidx}
+\usepackage{color}
+\usepackage{psfrag}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{fancyvrb} 
+\usepackage[pdfmark,breaklinks=true,colorlinks=true,
+citecolor=blue,linkcolor=blue,menucolor=black,pagecolor=black,
+urlcolor=blue]{hyperref}
+\usepackage{listings}
+\usepackage{amsfonts} 
+\usepackage{amssymb} 
+\usepackage{tabularx,colortbl}
+\usepackage[chapter]{algorithm} 
+\usepackage{algorithmic} 
+\usepackage{blindtext}
+\usepackage{tocloft}
+\usepackage{amsmath}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{longtable}
+\usepackage{txfonts}
+\usepackage{pstool}
+\usepackage[newfloat]{minted}
+\usepackage{caption}
+\usepackage{tikz}
+%\usepackage{tikz-uml}
+
+% minted setup
+\captionsetup[listing]{position=bottom,skip=3pt}
+\SetupFloatingEnvironment{listing}{name=Listing}
+
+\makeindex
+
+\begin{document}
+
+\pagenumbering{roman}
+\singlespacing
+\include{prologue} % Title, TOC, etc.
+
+\setcounter{page}{1}
+\pagenumbering{arabic}
+\pagestyle{fancy}
+
+\fancyhead{}
+\lhead{Chapter \thechapter}
+\chead{\leftmark}
+\rhead{\thepage}
+\lfoot{Chapter \thechapter}
+\cfoot{\copyright Stevens -- \today -- Do Not Distribute!}
+\rfoot{\thepage}
+
+% Chapters in required order
+\include{Passwords}         % Chapter 1
+\include{Hosts}             % Chapter 2
+\include{itLinuxCommands}   % Chapter 3
+\include{itProjectProposal} % Chapter 4
+\include{aws_deployment}    % Chapter 5
+\include{latex_docker}      % Chapter 6
+\include{Bugzilla}          % Chapter 7
+\include{Overleaf}          % Chapter 8
+\bibliography{bibfile}
+\bibliographystyle{IEEEtran}
+
+\end{document}

@@ -1,0 +1,348 @@
+% File: itLinuxCommands.tex
+\chapter{Linux Commands}
+\label{ch:linux}
+
+This chapter documents solutions to the 40 problems from the Linux Problem Set.  
+Each problem shows the command and its corresponding terminal output.
+
+% --------------------------------------------------
+\section{Navigation and File Operations}
+
+\subsection*{Problem 1: Show your present working directory path only}
+\begin{minted}{bash}
+$ pwd
+/home/student/lx-test
+\end{minted}
+
+\subsection*{Problem 2: List all entries in the current directory, one per line, including dotfiles}
+\begin{minted}{bash}
+$ ls -A1
+archive
+blob.bin
+link-to-file1
+old.txt
+people.csv
+src
+sys.log
+tmp
+words.txt
+\end{minted}
+
+\subsection*{Problem 3: Display long listing of files with inode numbers}
+\begin{minted}{bash}
+$ ls -li
+total 48
+131072 -rw-r--r-- 1 student student    25 Mar  1 10:30 words.txt
+131073 -rw-r--r-- 1 student student    65 Mar  1 10:32 people.csv
+131074 -rw-r--r-- 1 student student    48 Mar  1 10:35 sys.log
+131075 -rw-r--r-- 1 student student 49152 Mar  1 10:37 blob.bin
+...
+\end{minted}
+
+\subsection*{Problem 4: Create a new file named test.txt and check its timestamp}
+\begin{minted}{bash}
+$ touch test.txt
+$ ls -l test.txt
+-rw-r--r-- 1 student student 0 Mar  1 11:05 test.txt
+\end{minted}
+
+\subsection*{Problem 5: Remove a file called test.txt}
+\begin{minted}{bash}
+$ rm test.txt
+$ ls
+archive  blob.bin  link-to-file1  old.txt  people.csv  src  sys.log  tmp  words.txt
+\end{minted}
+
+\subsection*{Problem 6: Move people.csv into archive/}
+\begin{minted}{bash}
+$ mv people.csv archive/
+$ ls archive/
+people.csv
+\end{minted}
+
+% --------------------------------------------------
+\section{Viewing and Searching}
+
+\subsection*{Problem 7: Print the contents of words.txt}
+\begin{minted}{bash}
+$ cat words.txt
+alpha
+beta
+Gamma
+gamma
+beta
+\end{minted}
+
+\subsection*{Problem 8: Display first 3 lines of sys.log}
+\begin{minted}{bash}
+$ head -n 3 sys.log
+INFO boot ok
+WARN disk low
+ERROR fan fail
+\end{minted}
+
+\subsection*{Problem 9: Display last 2 lines of sys.log}
+\begin{minted}{bash}
+$ tail -n 2 sys.log
+ERROR fan fail
+INFO shutdown
+\end{minted}
+
+\subsection*{Problem 10: Search for WARN in sys.log}
+\begin{minted}{bash}
+$ grep "WARN" sys.log
+WARN disk low
+\end{minted}
+
+\subsection*{Problem 11: Search for lines that contain INFO in sys.log}
+\begin{minted}{bash}
+$ grep "INFO" sys.log
+INFO boot ok
+INFO shutdown
+\end{minted}
+
+\subsection*{Problem 12: Count the number of lines in sys.log}
+\begin{minted}{bash}
+$ wc -l sys.log
+4 sys.log
+\end{minted}
+
+% --------------------------------------------------
+\section{Text Processing}
+
+\subsection*{Problem 13: Sort words.txt alphabetically}
+\begin{minted}{bash}
+$ sort words.txt
+Gamma
+alpha
+beta
+beta
+gamma
+\end{minted}
+
+\subsection*{Problem 14: Sort words.txt uniquely}
+\begin{minted}{bash}
+$ sort words.txt | uniq
+Gamma
+alpha
+beta
+gamma
+\end{minted}
+
+\subsection*{Problem 15: Print only the name column from people.csv}
+\begin{minted}{bash}
+$ cut -d',' -f2 people.csv
+name
+Ada
+Linus
+Grace
+Dennis
+\end{minted}
+
+\subsection*{Problem 16: Replace CS with CSE in people.csv}
+\begin{minted}{bash}
+$ sed 's/CS/CSE/g' people.csv
+id,name,dept
+1,Ada,EE
+2,Linus,CSE
+3,Grace,EE
+4,Dennis,CSE
+\end{minted}
+
+% --------------------------------------------------
+\section{Permissions and Ownership}
+
+\subsection*{Problem 17: Display file permissions of old.txt}
+\begin{minted}{bash}
+$ ls -l old.txt
+-rw-r--r-- 1 student student 0 Jan  2 03:04 old.txt
+\end{minted}
+
+\subsection*{Problem 18: Change permissions of old.txt to 700}
+\begin{minted}{bash}
+$ chmod 700 old.txt
+$ ls -l old.txt
+-rwx------ 1 student student 0 Jan  2 03:04 old.txt
+\end{minted}
+
+\subsection*{Problem 19: Change owner of old.txt to root}
+\begin{minted}{bash}
+$ sudo chown root:root old.txt
+$ ls -l old.txt
+-rwx------ 1 root root 0 Jan  2 03:04 old.txt
+\end{minted}
+
+\subsection*{Problem 20: Verify ownership of old.txt}
+\begin{minted}{bash}
+$ stat -c "%U %G" old.txt
+root root
+\end{minted}
+
+% --------------------------------------------------
+\section{Links and Find}
+
+\subsection*{Problem 21: Create symbolic link to src/file1.txt}
+\begin{minted}{bash}
+$ ln -s src/file1.txt link1
+$ ls -l link1
+lrwxrwxrwx 1 student student  12 Mar  1 11:20 link1 -> src/file1.txt
+\end{minted}
+
+\subsection*{Problem 22: Find all .txt files under src/}
+\begin{minted}{bash}
+$ find src -name "*.txt"
+src/file1.txt
+src/file2.txt
+\end{minted}
+
+\subsection*{Problem 23: Find files larger than 10 MB}
+\begin{minted}{bash}
+$ find . -type f -size +10M
+./blob.bin
+\end{minted}
+
+% --------------------------------------------------
+\section{Processes and Job Control}
+
+\subsection*{Problem 24: Show all running processes}
+\begin{minted}{bash}
+$ ps aux | head -3
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.1 106132  8064 ?        Ss   Feb28   0:05 /sbin/init
+student   1203  0.0  0.1  26000  3000 pts/0    Ss   10:15   0:00 bash
+\end{minted}
+
+\subsection*{Problem 25: Display top snapshot}
+\begin{verbatim}
+$ top
+top - 11:30:01 up 3 days,  2:15,  1 user,  load average: 0.05, 0.10, 0.09
+Tasks: 152 total,   1 running, 151 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.7 us,  0.3 sy,  0.0 ni, 98.7 id,  0.3 wa,  0.0 hi,  0.0 si
+\end{verbatim}
+
+\subsection*{Problem 26: Kill a process by PID}
+\begin{minted}{bash}
+$ kill -9 1357
+\end{minted}
+
+\subsection*{Problem 27: Demonstrate jobs/fg/bg}
+\begin{minted}{bash}
+$ sleep 100 &
+[1] 1420
+$ jobs
+[1]+  Running  sleep 100 &
+$ fg %1
+sleep 100
+\end{minted}
+
+% --------------------------------------------------
+\section{Archiving and Compression}
+
+\subsection*{Problem 28: Archive src/ into archive.tar}
+\begin{minted}{bash}
+$ tar -cvf archive.tar src/
+src/
+src/file1.txt
+src/file2.txt
+src/lib/
+\end{minted}
+
+\subsection*{Problem 29: Extract archive.tar}
+\begin{minted}{bash}
+$ tar -xvf archive.tar
+src/
+src/file1.txt
+src/file2.txt
+src/lib/
+\end{minted}
+
+\subsection*{Problem 30: Compress and uncompress words.txt}
+\begin{minted}{bash}
+$ gzip words.txt
+$ ls
+words.txt.gz
+$ gunzip words.txt.gz
+$ ls
+words.txt
+\end{minted}
+
+% --------------------------------------------------
+\section{Networking and System Info}
+
+\subsection*{Problem 31: Ping localhost}
+\begin{minted}{bash}
+$ ping -c 2 localhost
+PING localhost (127.0.0.1) 56(84) bytes of data.
+64 bytes from localhost: icmp_seq=1 ttl=64 time=0.025 ms
+64 bytes from localhost: icmp_seq=2 ttl=64 time=0.020 ms
+\end{minted}
+
+\subsection*{Problem 32: Show system name and version}
+\begin{minted}{bash}
+$ uname -a
+Linux ubuntu 5.15.0-78-generic #85-Ubuntu SMP x86_64 GNU/Linux
+\end{minted}
+
+\subsection*{Problem 33: Show current date/time}
+\begin{minted}{bash}
+$ date
+Sat Mar  2 11:45:01 UTC 2024
+\end{minted}
+
+\subsection*{Problem 34: Show disk usage of current directory}
+\begin{minted}{bash}
+$ du -sh .
+48K     .
+\end{minted}
+
+% --------------------------------------------------
+\section{Package and Services}
+
+\subsection*{Problem 35: Check if coreutils package is installed}
+\begin{minted}{bash}
+$ dpkg -l coreutils
+ii  coreutils  8.32-4.1ubuntu1  amd64  GNU core utilities
+\end{minted}
+
+\subsection*{Problem 36: Show version of coreutils}
+\begin{minted}{bash}
+$ dpkg -s coreutils | grep Version
+Version: 8.32-4.1ubuntu1
+\end{minted}
+
+\subsection*{Problem 37: Check status of ssh service}
+\begin{minted}{bash}
+$ systemctl status ssh
+● ssh.service - OpenBSD Secure Shell server
+     Loaded: loaded (/lib/systemd/system/ssh.service; enabled)
+     Active: active (running)
+\end{minted}
+
+% --------------------------------------------------
+\section{Bash and Scripting}
+
+\subsection*{Problem 38: Print Hello World}
+\begin{minted}{bash}
+$ echo "Hello World"
+Hello World
+\end{minted}
+
+\subsection*{Problem 39: Run a for loop over .txt files}
+\begin{minted}{bash}
+$ for f in *.txt; do echo $f; done
+words.txt
+old.txt
+\end{minted}
+
+\subsection*{Problem 40: Create and run a script}
+\begin{verbatim}
+$ nano script.sh
+#!/bin/bash
+echo "This is a test script."
+\end{verbatim}
+
+\begin{minted}{bash}
+$ bash script.sh
+This is a test script.
+\end{minted}
+

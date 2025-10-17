@@ -1,0 +1,66 @@
+% File: latex_docker.tex
+\chapter{LaTeX Docker}
+\label{ch:latex-docker}
+
+This chapter describes how we created a Docker container to compile a simple 
+\LaTeX{} document using TeX Live, the same toolchain used by Overleaf. 
+All commands are shown using \texttt{minted}.
+
+\section{Dockerfile}
+We built a custom Dockerfile to install TeX Live, \texttt{latexmk}, and 
+\texttt{pygments} (needed for minted).
+
+\begin{listing}[H]
+\caption{Dockerfile for LaTeX builds}
+\begin{minted}{docker}
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y \
+    texlive-latex-base texlive-latex-extra \
+    texlive-fonts-recommended latexmk \
+    python3-pygments && rm -rf /var/lib/apt/lists/*
+WORKDIR /work
+CMD ["latexmk", "-pdf", "-shell-escape", "main.tex"]
+\end{minted}
+\end{listing}
+
+\section{Sample Document}
+Below is a minimal \LaTeX{} document that we compiled inside the container.
+
+\begin{listing}[H]
+\caption{main.tex example}
+\begin{minted}{latex}
+\documentclass{article}
+\begin{document}
+Hello from \LaTeX{} in Docker!
+
+Here is some math: $E = mc^2$.
+
+\begin{listing}[H]
+\caption{Example Python code}
+\begin{minted}{python}
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("Docker + LaTeX"))
+\end{minted}
+\end{listing}
+
+
+\section{Build and Run}
+We built the Docker image and compiled the document using the following steps:
+
+\begin{listing}[H]
+\caption{Build and run LaTeX Docker container}
+\begin{minted}{bash}
+# Build the Docker image
+docker build -t latex-docker .
+
+# Run container and compile main.tex
+docker run --rm -v $PWD:/work latex-docker
+\end{minted}
+\end{listing}
+
+\section{Result}
+After running the container, a PDF file \texttt{main.pdf} was generated 
+in the working directory, confirming that the TeX Live environment 
+inside Docker successfully compiled the document.
